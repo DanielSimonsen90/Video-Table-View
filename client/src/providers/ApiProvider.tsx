@@ -6,7 +6,28 @@ import { API_URL } from '../constants';
 const ApiUrlContext = createContext<string | undefined>(undefined);
 const ensureSlash = (url: string) => (url.startsWith("/") ? url : `/${url}`);
 
-export function useRequest<Model>(url: string, query?: Object, options: RequestInit = { method: 'GET' }): Model {
+function request<Data>(url: string, options: RequestInit = { method: 'GET' }): Promise<Data> {
+    return new Promise((resolve, reject) => {
+        fetch(url, options)
+            .then(res => res.json())
+            .then(resolve)
+            .catch(reject);
+    })
+}
+
+export function useRequest<Model>(url?: string, options: RequestInit = { method: 'GET' }) {
+    const apiUrl = useContext(ApiUrlContext);
+    const getEndpoint = (url: string) => `${apiUrl}${ensureSlash(url)}`.replace(/ +/, "%20");
+    return (endpoint?: string) => {
+        if (!endpoint && !url) throw new Error('No endpoint or url provided');
+
+        const fullEndpoint = getEndpoint(endpoint ?? url!);
+        console.log(`Requesting ${fullEndpoint}`);
+        return request<Model>(fullEndpoint, options);
+    }
+}
+
+export function useRequestState<Model>(url: string, query?: Object, options: RequestInit = { method: 'GET' }): Model {
     const apiUrl = useContext(ApiUrlContext);
     const endpoint = `${apiUrl}${ensureSlash(url)}`.replace(/ +/, "%20");
     const dependencies = useMemo(() => Object.keysOf(query ?? {}).map(key => query?.[key]), [query]);
@@ -17,12 +38,7 @@ export function useRequest<Model>(url: string, query?: Object, options: RequestI
     useDeepCompareEffect(() => {
         if (dependencies.every(Boolean)) {
             console.log(`Requesting ${endpoint}`, query);
-            fetch(endpoint, options)
-                .then(async res => {
-                    const data = await res.json();
-                    console.log('Response', { res, data });
-                    return data
-                })
+            request<Model>(endpoint, options)
                 .then(setValue)
                 .catch(setError);
         }

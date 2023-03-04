@@ -16,6 +16,7 @@ export class Folder extends Array<Video | Folder> {
             this.createdAt = option instanceof Date 
                 ? option 
                 : option.birthtime;
+
         }
     }
 

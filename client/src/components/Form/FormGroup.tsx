@@ -1,4 +1,5 @@
 import { BaseProps } from "danholibraryrjs";
+import { decodeProperty } from "helpers";
 import { InputProps } from "./Input";
 import Select, { SelectProps } from "./Select";
 
@@ -23,15 +24,8 @@ export default function FormGroup<
 
     return (
         <div className="form-group" {...rest}>
-            <label htmlFor={property} {...label}>{getLabel(property)}</label>
+            <label htmlFor={property} {...label}>{decodeProperty(property)}</label>
             <Select {...{ data, property, setData }} {...select} />
         </div>
     )
-}
-
-function getLabel(label: string) {
-    return label.replace(/([A-Z])/g, ' $1')
-        .replace(/^./, function (str) { 
-            return str.toUpperCase(); 
-        });
 }

@@ -2,15 +2,36 @@ import { useMemo, useState } from 'react';
 import { BaseProps } from 'danholibraryrjs';
 import { Video, Folder } from 'vtv-models';
 import useSort from 'hooks/useSort';
+import { decodeProperty } from 'helpers';
+import { useRequest } from 'providers/ApiProvider';
 
 type Props = BaseProps<HTMLDivElement, false> & {
     folder: Folder
 }
 
+function useVideoListSearch(videos: Video[], sortedBy: keyof Video, search: string) {
+    const [sortedVideos, isAscending, toggleAscending] = useSort(videos, sortedBy);
+    const filteredVideos = useMemo(() => {
+        if (!search) return sortedVideos;
+        return sortedVideos.filter(({ name, createdAt, folderPath, path }) => {
+            const filters = [name, createdAt.toLocaleDateString(), folderPath, path]
+                .map(filter => filter.toLowerCase());
+            return filters.some(filter => filter.includes(search.toLowerCase()));
+        });
+    }, [sortedVideos, search]);
+
+    return [filteredVideos, isAscending, toggleAscending] as const;
+}
+
 export default function VideoList({ folder }: Props) {
     const [sortedBy, setSortedBy] = useState<keyof Video>('name');
-    const videos = useMemo(() => getVideosFromFolder(folder), [folder.name]);
-    const [sortedVideos, isAscending, toggleAscending] = useSort(videos, sortedBy);
+    const [search, setSearch] = useState('');
+    const videoData = useMemo(() => getVideosFromFolder(folder), [folder.name]);
+    const [videos, isAscending, toggleAscending] = useVideoListSearch(videoData, sortedBy, search);
+
+    const [game, friendGroup] = folder.path.split('/').reverse();
+    const requestPlayVideo = useRequest();
+    const requestOpenFolder = useRequest(`/medal/${friendGroup}/${game}/open`);
 
     const onHeadClick = (name: keyof Video) => {
         if (name === sortedBy) return toggleAscending();
@@ -21,20 +42,32 @@ export default function VideoList({ folder }: Props) {
 
     return (<>
         <p><b>Sorted by:</b> {sortedBy}, {isAscending ? 'Ascending' : 'Descending'}</p>
+        <input type='text' placeholder='Search' value={search} onChange={e => setSearch(e.target.value)} />
         <table className='video-list'>
             <thead>
                 <tr>
                     <TableHeader title='name' {...{ onHeadClick, sortedBy }} />
                     <TableHeader title='folderPath' {...{ onHeadClick, sortedBy }} />
                     <TableHeader title='createdAt' {...{ onHeadClick, sortedBy }} />
+                    <TableHeader title='modifiedAt' {...{ onHeadClick, sortedBy }} />
+                    <th>Buttons</th>
                 </tr>
             </thead>
             <tbody>
-                {sortedVideos.map(video => (
+                {videos.map(video => (
                     <tr key={video.path}>
                         <td>{video.name}</td>
                         <td>{video.folderPath}</td>
                         <td>{video.createdAt.toLocaleDateString()}</td>
+                        <td>{video.modifiedAt.toLocaleDateString()}</td>
+                        <div className="button-container">
+                            <button onClick={() => requestPlayVideo(
+                                `/medal/${friendGroup}/${game}/play?path=${video.path}`,
+                            )}>Play</button>
+                            <button onClick={() => requestOpenFolder(
+                                `/medal/${friendGroup}/${game}/open?path=${video.folderPath}`
+                            )}>Open Folder</button>
+                        </div>
                     </tr>
                 ))}
             </tbody>
@@ -53,6 +86,7 @@ function getVideosFromFolder(folder: Folder): Video[] {
     return videos.map(video => ({
         ...video,
         createdAt: new Date(video.createdAt),
+        modifiedAt: new Date(video.modifiedAt)
     }));
 }
 
@@ -65,5 +99,5 @@ type TableHeaderProps = {
 function TableHeader({ title: name, sortedBy, onHeadClick }: TableHeaderProps) {
     return <th onClick={() => onHeadClick(name)} {...{
         className: sortedBy === name ? 'selected' : '',
-    }}>{name}</th>;
+    }}>{decodeProperty(name)}</th>;
 }

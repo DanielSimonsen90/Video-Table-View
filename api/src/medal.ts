@@ -1,5 +1,6 @@
+import { exec } from 'child_process';
 import { readdirSync, statSync } from 'fs';
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { Folder, SortBy } from 'vtv-models'
 import log from './log.js';
 
@@ -31,12 +32,8 @@ router.get('/:friendGroup', (req, res) => {
 
     // Find the friend group as you can't trust client casing
     // If found, continue processing, else return 404
-    const friendGroupPath = readdirSync(MEDAL_PATH).find(file => file.toLowerCase() === friendGroup.toLowerCase());
-    if (!friendGroupPath) return res.status(404).json({ error: `Friend group "${friendGroup}" not found.` });
-    log(req, `Friend group "${friendGroupPath}" found from ${friendGroup}.`)
-
-    // Process the path and return the folder
-    const path = `${MEDAL_PATH}/${friendGroupPath}`;
+    const path = getCorrentPath(req, res, MEDAL_PATH, friendGroup);
+    if (typeof path !== 'string') return path;
     log(req, `Processing path: ${path}`)
 
     const files = readdirSync(path);
@@ -45,29 +42,34 @@ router.get('/:friendGroup', (req, res) => {
 });
 
 router.get('/:friendGroup/:game', (req, res) => {
-    // Extract request information
-    const { friendGroup, game } = req.params;
-    const { sortBy } = req.query;
-
-    // Find the friend group and game as you can't trust client casing
-    // If found, continue processing, else return 404
-    const friendGroupPath = readdirSync(MEDAL_PATH).find(file => file.toLowerCase() === friendGroup.toLowerCase());
-    if (!friendGroupPath) return res.status(404).json({ error: `Friend group "${friendGroup}" not found.` });
-    log(req, `Friend group "${friendGroupPath}" found from ${friendGroup}.`)
-
-    const gamePath = readdirSync(`${MEDAL_PATH}/${friendGroupPath}`).find(file => file.toLowerCase() === game.toLowerCase());
-    if (!gamePath) return res.status(404).json({ error: `Game "${game}" not found.` });
-    log(req, `Game "${gamePath}" found from ${game}.`)
-
-    // Process the path and return the folder
-    const path = `${MEDAL_PATH}/${friendGroupPath}/${gamePath}`;
+    const path = getPath(req, res);
+    if (typeof path !== 'string') return path;
     log(req, `Processing path: ${path}`)
 
     const files = readdirSync(path);
     const folder = processPath(path, files);
     log(req, `${folder.length} videos found.`)
 
-    res.status(200).json(folder.sortBy(sortBy as SortBy));
+    res.status(200).json(folder.sortBy(req.query.sortBy as SortBy));
+});
+
+router.get('/:friendGroup/:game/open', (req, res) => {
+    const path = req.query.path;
+    if (typeof path !== 'string') return res.status(400).json({ error: 'Invalid path.' });
+    log(req, `Video path: ${path}`);
+
+    exec(`start "" "${path}"`);
+    res.status(204).json({ message: 'Opened folder.' });
+});
+
+router.get('/:friendGroup/:game/play', (req, res) => {
+    const path = req.query.path;
+    if (typeof path !== 'string') return res.status(400).json({ error: 'Invalid path.' });
+    log(req, `Video path: ${path}`);
+    
+    // Open file in read mode
+    exec(`start "" "${path}"`);
+    res.status(204).json({ message: 'Opened video.' });
 });
 
 router.get('*', (req, res) => {
@@ -75,6 +77,25 @@ router.get('*', (req, res) => {
 })
 
 export default router;
+
+function getPath(req: Request, res: Response): string | Response {
+    // Extract request information
+    const { friendGroup, game } = req.params;
+
+    // Find the friend group and game as you can't trust client casing
+    // If found, continue processing, else return 404
+    const friendGroupPath = getCorrentPath(req, res, MEDAL_PATH, friendGroup);
+    if (typeof friendGroupPath !== 'string') return friendGroupPath;
+
+    return getCorrentPath(req, res, friendGroupPath, game);
+}
+
+function getCorrentPath(req: Request, res: Response, path: string, search: string): string | Response {
+    const result = readdirSync(path).find(file => file.toLowerCase() === search.replace('%20', ' ').toLowerCase());
+    if (!result) return res.status(404).json({ error: `File "${search}" not found.` });
+    log(req, `File "${result}" found from ${search}.`)
+    return `${path}/${result}`;
+}
 
 function processPath(path: string, files: Array<string>): Folder {
     // Create folder result
@@ -95,9 +116,11 @@ function processPath(path: string, files: Array<string>): Folder {
         // If the file is a video, add it to the folder
         if (file.includes('.mp4')) {
             const { size, birthtime: createdAt, mtime: modifiedAt } = statSync(filePath);
-            const [name, extension] = file.split('.');
+            const [extension, ...name] = file.split('.').reverse();
+            console.log({ extension, name: name.join('.') })
             folder.push({
-                name, extension, 
+                name: name.reverse().join('.'), 
+                extension, 
                 size, createdAt, modifiedAt,
                 path: filePath,
                 folderPath: path
