@@ -23,12 +23,10 @@ const vite = await createViteServer({
 app.use(vite.middlewares)
 
 app.use((req, res, next) => {
-    console.log(req.originalUrl);
+    console.log(`[Server] ${req.method} ${req.originalUrl}`);
     next();
 });
 
-import MedalRouter from './api/medal.js';
-app.use('/api/medal', MedalRouter);
 app.use('*', async (req, res, next) => {
     const url = req.originalUrl;
 
@@ -44,7 +42,7 @@ app.use('*', async (req, res, next) => {
         // Load the server entry. ssrLoadModule automatically transforms
         // ESM source code to be usable in Node.js! There is no bundling
         // required, and provides efficient invalidation similar to HMR.
-        const { render } = await vite.ssrLoadModule('/src/entry-server.tsx')
+        const { render } = await vite.ssrLoadModule('/dist/entry-server.js')
 
         // render the app HTML. This assumes entry-server.js's exported
         //  `render` function calls appropriate framework SSR APIs,

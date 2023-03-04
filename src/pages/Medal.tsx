@@ -1,17 +1,18 @@
+import { Suspense, useMemo } from 'react';
 import { useStateOnChange } from 'danholibraryrjs';
-import { Suspense } from 'react';
+
+import Medal from '../api/medal';
 import Input from '../components/Input';
 import useDomLoaded from '../hooks/useDomLoaded';
-import { useRequest } from '../providers/ApiProvider';
 
-export default function Home() {
-    const [query, input, setInput] = useStateOnChange({ game: "", friend: "", sortBy: "" }, "1s");
-    const { data, error } = useRequest(`/medal/${query.friend}/${query.game}?sortBy=${query.sortBy}`, undefined, [query]);
+export default function MedalView() {
+    const [query, input, setInput] = useStateOnChange({ game: "", friendGroup: "", sortBy: "" }, "1s");
+    // const data = useMemo(() => Medal.getAll(query), [query]);
     const isDomLoaded = useDomLoaded();
-
+    
     if (!isDomLoaded) return null;
 
-    console.log(data);
+    // console.log(data);
 
     return (
         <main>
@@ -20,15 +21,14 @@ export default function Home() {
                 <Input id="query" data={input} setData={setInput} property="game" />
 
                 <label htmlFor="query-friend">Search for friendgroup in Medal folder</label>
-                <Input id="query" data={input} setData={setInput} property="friend" />
+                <Input id="query" data={input} setData={setInput} property="friendGroup" />
 
                 <label htmlFor="query-sortBy">Sort by</label>
                 <Input id="query" data={input} setData={setInput} property="sortBy" />
             </form>
 
             <Suspense fallback={<div>Loading...</div>}>
-                {error && <div>Error: {error.message}</div>}
-                {data && <div>{JSON.stringify(data)}</div>}
+                {/* {data && <div>{JSON.stringify(data)}</div>} */}
             </Suspense>
         </main>
     );

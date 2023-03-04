@@ -1,11 +1,11 @@
 import { hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import Home from './pages/Home';
+import Medal from './pages/Medal';
 
 hydrateRoot(
     document.getElementById('app'),
     <BrowserRouter>
-        <Home />
+        <Medal />
     </BrowserRouter>,
 )
 console.log('hydrated')

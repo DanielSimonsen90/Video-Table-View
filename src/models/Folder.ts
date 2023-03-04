@@ -1,18 +1,24 @@
-export default class Folder extends Array {
-    constructor(path) {
+import Video from './Video.js';
+
+export type SortBy = 'date' | 'name' | string;
+
+export default class Folder extends Array<Video> {
+    constructor(public path: string) {
         super();
-        this.path = path;
     }
-    get name() {
+
+    get name(): string {
         return this.path.split('/').pop();
     }
-    sortByDate() {
+
+    public sortByDate(): this {
         return this.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
     }
-    sortByName() {
+    public sortByName(): this {
         return this.sort((a, b) => a.name.localeCompare(b.name));
     }
-    sortBy(sortBy) {
+
+    public sortBy(sortBy: SortBy): this {
         switch (sortBy) {
             case 'date': return this.sortByDate();
             case 'name': return this.sortByName();
