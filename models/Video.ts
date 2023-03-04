@@ -5,6 +5,8 @@ type Video = {
     size: number;
     createdAt: Date;
     modifiedAt: Date;
+
+    folderPath: string;
 }
 
 export default Video;

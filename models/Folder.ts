@@ -7,7 +7,7 @@ export default class Folder extends Array<Video> {
         super();
     }
 
-    get name(): string {
+    get name(): string | undefined {
         return this.path.split('/').pop();
     }
 

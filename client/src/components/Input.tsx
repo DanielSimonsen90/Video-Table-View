@@ -1,6 +1,6 @@
 import { BaseProps, UseStateSetState } from "danholibraryrjs";
 
-type Props<
+export type InputProps<
     Data extends Record<string, string>, 
     Property extends keyof Data
 > = Omit<BaseProps<HTMLInputElement, false>, 'onChange'> & {
@@ -12,7 +12,7 @@ type Props<
 export default function Input<
     Data extends Record<string, string>, 
     Property extends keyof Data
->({ data, property, setData }: Props<Data, Property>) {
+>({ data, property, setData, ...props }: InputProps<Data, Property>) {
     return (
         <input
             value={data[property]}
@@ -20,6 +20,7 @@ export default function Input<
                 ...data, 
                 [property]: e.target.value 
             }))}
+            {...props}
         />
     );
 }
