@@ -1,12 +1,9 @@
 {
+    "compileOnSave": true,
     "compilerOptions": {
         "target": "ES6",
         "moduleResolution": "node",
         "outDir": "dist",
         "esModuleInterop": true,
-    },
-    "exclude": [
-        "node_modules",
-        "client"
-    ]
+    }
 }

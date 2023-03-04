@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { BaseProps, useDeepCompareEffect } from "danholibraryrjs";
 
 import { API_URL } from '../constants';
@@ -18,7 +18,11 @@ export function useRequest<Model>(url: string, query?: Object, options: RequestI
         if (dependencies.every(Boolean)) {
             console.log(`Requesting ${endpoint}`, query);
             fetch(endpoint, options)
-                .then(res => res.json())
+                .then(async res => {
+                    const data = await res.json();
+                    console.log('Response', { res, data });
+                    return data
+                })
                 .then(setValue)
                 .catch(setError);
         }

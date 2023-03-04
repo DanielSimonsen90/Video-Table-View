@@ -1,6 +1,6 @@
 import { readdirSync, statSync } from 'fs';
 import { Router } from 'express';
-import Folder, { SortBy } from '../models/Folder.js';
+import { Folder, SortBy } from 'vtv-models'
 import log from './log.js';
 
 // If you use process.env in file, you must import dotenv and call config()
@@ -19,7 +19,7 @@ export type MedalGetAllOptions = {
 
 router.get('/friendGroups', (req, res) => {
     // Get all friend groups
-    const friendGroups = readdirSync(MEDAL_PATH).filter(file => !file.includes('.'));
+    const friendGroups = readdirSync(MEDAL_PATH).filter(file => !file.includes('.') && !file.includes('Launcher'));
     log(req, `${friendGroups.length} friend groups found.`)
 
     res.status(200).json(friendGroups);
@@ -78,14 +78,15 @@ export default router;
 
 function processPath(path: string, files: Array<string>): Folder {
     // Create folder result
-    const videos = new Folder(path);
+    const stats = statSync(path);
+    const folder = new Folder(path, stats);
 
     for (const file of files) {
         const filePath = `${path}/${file}`;
 
         // If the file is a folder, process it
         if (!file.includes('.')) {
-            videos.push(...processPath(
+            folder.push(processPath(
                 filePath, 
                 readdirSync(filePath)
             ));
@@ -93,19 +94,17 @@ function processPath(path: string, files: Array<string>): Folder {
 
         // If the file is a video, add it to the folder
         if (file.includes('.mp4')) {
-            const info = statSync(filePath);
-            videos.push({
-                name: file,
+            const { size, birthtime: createdAt, mtime: modifiedAt } = statSync(filePath);
+            const [name, extension] = file.split('.');
+            folder.push({
+                name, extension, 
+                size, createdAt, modifiedAt,
                 path: filePath,
-                extension: file.split('.').pop()!,
-                size: info.size,
-                createdAt: info.birthtime,
-                modifiedAt: info.mtime,
                 folderPath: path
             });
         }
     }
 
     // Return the folder
-    return videos;
+    return folder;
 }

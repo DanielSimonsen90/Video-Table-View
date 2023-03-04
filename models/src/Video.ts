@@ -1,4 +1,4 @@
-type Video = {
+export type Video = {
     name: string;
     path: string;
     extension: string;

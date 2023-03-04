@@ -1,4 +1,4 @@
-import { BaseProps, useDeepCompareEffect } from "danholibraryrjs";
+import { BaseProps } from "danholibraryrjs";
 import { InputProps } from "./Input";
 
 export type SelectProps<

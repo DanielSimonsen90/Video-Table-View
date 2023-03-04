@@ -1,20 +1,18 @@
 import { Suspense } from 'react';
 import { useStateOnChange } from 'danholibraryrjs';
-import type Folder from '../../../models/Folder';
+import type { Folder } from 'vtv-models';
 
-import Input from '../components/Input';
-import { useRequest } from '../providers/ApiProvider';
-import FormGroup from '../components/FormGroup';
-
-const friendGroupLock = {};
+import { useRequest } from 'providers/ApiProvider';
+import FormGroup from 'components/Form/FormGroup';
+import VideoList from 'components/Medal/VideoList';
 
 export default function MedalView() {
     const [query, input, setInput] = useStateOnChange({ game: "", friendGroup: "" }, "1s");
     const friendGroups = useRequest<string[]>('/medal/friendGroups');
     const games = useRequest<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup });
-    const videos = useRequest<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
+    const folder = useRequest<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
 
-    console.log({ query, input, friendGroups, games, videos });
+    console.log({ query, input, friendGroups, games, folder });
 
     return (
         <main>
@@ -24,7 +22,7 @@ export default function MedalView() {
             </form>
 
             <Suspense fallback={<div>Loading...</div>}>
-                {videos && <div>{JSON.stringify(videos)}</div>}
+                {folder ? <VideoList folder={folder} /> : <h1>There are no videos.</h1>}
             </Suspense>
         </main>
     );
