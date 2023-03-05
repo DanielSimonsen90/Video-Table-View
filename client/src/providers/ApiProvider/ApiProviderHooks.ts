@@ -1,19 +1,8 @@
-import { createContext, useContext, useState, useMemo } from "react";
-import { BaseProps, useDeepCompareEffect } from "danholibraryrjs";
+import { useDeepCompareEffect } from "danholibraryrjs";
+import { useContext, useMemo, useState } from "react";
 
-import { API_URL } from '../constants';
-
-const ApiUrlContext = createContext<string | undefined>(undefined);
-const ensureSlash = (url: string) => (url.startsWith("/") ? url : `/${url}`);
-
-function request<Data>(url: string, options: RequestInit = { method: 'GET' }): Promise<Data> {
-    return new Promise((resolve, reject) => {
-        fetch(url, options)
-            .then(res => res.json())
-            .then(resolve)
-            .catch(reject);
-    })
-}
+import { ApiUrlContext } from "./ApiProviderConstants";
+import { ensureSlash, request } from "./ApiProviderFunctions";
 
 export function useRequest<Model>(url?: string, options: RequestInit = { method: 'GET' }) {
     const apiUrl = useContext(ApiUrlContext);
@@ -34,7 +23,7 @@ export function useRequestState<Model>(url: string, query?: Object, options: Req
 
     const [value, setValue] = useState<Model | undefined>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
-    
+
     useDeepCompareEffect(() => {
         if (dependencies.every(Boolean)) {
             console.log(`Requesting ${endpoint}`, query);
@@ -55,12 +44,4 @@ export function useRequestState<Model>(url: string, query?: Object, options: Req
     }
 
     return value as Model;
-}
-
-export default function ApiProvider({ children }: BaseProps) {
-    return (
-        <ApiUrlContext.Provider value={API_URL}>
-            {children}
-        </ApiUrlContext.Provider>
-    );
 }

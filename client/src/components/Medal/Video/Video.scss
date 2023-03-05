@@ -1,0 +1,31 @@
+@mixin propertyElement($property) {
+    [aria-label=#{$property}] {
+        @content;
+    }
+}
+
+.video {
+    margin: 1rem;
+    margin-inline: unset;
+
+    padding: 2rem;
+
+    display: grid;
+    gap: .5em;
+
+    border-top: 1px solid var(--foreground-dark);
+
+    @include propertyElement('name') {
+        text-align: center;
+    }
+
+    @include propertyElement('folder-path') {
+        color: var(--foreground-dark);
+    }
+
+    footer {
+        display: grid;
+        grid-auto-flow: column;
+        grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+    }
+}

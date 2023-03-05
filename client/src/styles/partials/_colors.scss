@@ -1,0 +1,8 @@
+$dark: #333;
+$light: #eee;
+
+$dark-light: mix($dark, $light, 40%);
+$dark-darker: mix($dark, black, 90%);
+
+$light-dark: mix($light, $dark, 40%);
+$light-lighter: mix($light, white, 90%);

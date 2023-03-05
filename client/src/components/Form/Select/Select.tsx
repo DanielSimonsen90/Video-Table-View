@@ -1,12 +1,4 @@
-import { BaseProps } from "danholibraryrjs";
-import { InputProps } from "./Input";
-
-export type SelectProps<
-    Data extends Record<string, string>,
-    Property extends keyof Data
-> = Omit<InputProps<Data, Property>, keyof HTMLInputElement> & BaseProps<HTMLSelectElement, false> & {
-    options: string[];
-}
+import type { SelectProps } from "./SelectTypes";
 
 export default function Select<
     Data extends Record<string, string>,

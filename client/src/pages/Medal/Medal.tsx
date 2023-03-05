@@ -12,18 +12,19 @@ export default function MedalView() {
     const games = useRequestState<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup });
     const folder = useRequestState<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
 
-    console.log({ query, input, friendGroups, games, folder });
-
     return (
-        <main>
-            <form className="search">
-                <FormGroup data={input} setData={setInput} property="friendGroup" select={{ options: friendGroups ?? [] }}  />
-                <FormGroup data={input} setData={setInput} property="game" select={{ options: games ?? [] }}  />
-            </form>
-
-            <Suspense fallback={<div>Loading...</div>}>
-                {folder ? <VideoList folder={folder} /> : <h1>There are no videos.</h1>}
-            </Suspense>
-        </main>
+        <div id="medal" className="page">
+            <header>
+                <form className="search">
+                    <FormGroup data={input} setData={setInput} property="friendGroup" select={{ options: friendGroups ?? [] }}  />
+                    <FormGroup data={input} setData={setInput} property="game" select={{ options: games ?? [] }}  />
+                </form>
+            </header>
+            <main>
+                <Suspense fallback={<div>Loading...</div>}>
+                    {folder ? <VideoList folder={folder} /> : <h1>There are no videos.</h1>}
+                </Suspense>
+            </main>
+        </div>
     );
 }

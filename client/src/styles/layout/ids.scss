@@ -1,0 +1,6 @@
+#root {
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-rows: 1fr;
+    // grid-template-area: "header" "main" "footer";
+}

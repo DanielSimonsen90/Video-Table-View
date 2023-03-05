@@ -1,0 +1,24 @@
+@use "../partials/colors" as clr;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family: cursive, sans-serif;
+
+  --background: #{clr.$dark};
+  --background-light: #{clr.$dark-light};
+  --background-dark: #{clr.$dark-darker};
+  
+  --foreground: #{clr.$light};
+  --foreground-light: #{clr.$light-lighter};
+  --foreground-dark: #{clr.$light-dark};
+}
+
+@import './elements.scss';
+@import './classes.scss';
+@import './ids.scss';
+@import '../media-queries/prefers-color-scheme.scss';

@@ -1,0 +1,8 @@
+@use "../partials/colors" as clr;
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background: #{clr.$light};
+        --foreground: #{clr.$dark};
+    }
+}

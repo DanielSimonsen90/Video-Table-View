@@ -1,0 +1,1 @@
+export const TABLE_QUERY = 'min-width: 800px';

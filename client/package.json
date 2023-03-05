@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "danholibraryrjs": "^1.2.0",
+    "node-sass": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "sass": "^1.58.3",
     "typescript": "^4.9.5"
   },
   "devDependencies": {

@@ -1,0 +1,6 @@
+.button-container {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+    gap: 1rem;
+}
