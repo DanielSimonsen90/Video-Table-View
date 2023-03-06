@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import Medal from './pages/Medal';
-import ApiProvider from './providers/ApiProvider';
+import Medal from 'pages/Medal';
+import ApiProvider from 'providers/ApiProvider';
 
 import './styles/index.scss';
 

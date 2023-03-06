@@ -22,7 +22,10 @@ export default function VideoList({ folder }: VideoListProps) {
     }
 
     return (<>
-        <input type='text' placeholder='Search' value={search} onChange={e => setSearch(e.target.value)} />
-        {isTable ? <VideoListTable {...displayProps} /> : <VideoListCards {...displayProps} />}
+        <input key='search' type='text' placeholder='Search' value={search} onChange={e => setSearch(e.target.value)} />
+        {isTable 
+            ? <VideoListTable {...displayProps} /> 
+            : <VideoListCards {...displayProps} />
+        }
     </>);
 }
