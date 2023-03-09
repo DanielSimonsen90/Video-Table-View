@@ -13,15 +13,48 @@ header {
     justify-content: center;
 }
 
+main {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+}
+
 footer {
     display: flex;
     justify-content: space-evenly;
 }
 
-select {
+h1 {
+    text-align: center;
+}
+
+select, input[type=text] {
     background-color: var(--background-dark);
     border: 1px solid var(--foreground-dark);
     color: var(--foreground);
     padding: .25rem;
     border-radius: .5em;
+    max-width: 30ch;
+
+    &:focus-visible,
+    &:focus-within,
+    &:focus {
+        outline: none;
+        border-color: var(--foreground);
+    }
+}
+
+tr {
+    display: grid;
+    grid-template-columns: 
+        minmax(5em, 10em) 
+        minmax(18em, 1fr) 
+        repeat(2, minmax(5vw, 6em)) 
+        minmax(8vw, 8vw);
+    gap: 1em;
+    margin: 1em 0;
+}
+
+thead tr {
+    margin: unset;
 }

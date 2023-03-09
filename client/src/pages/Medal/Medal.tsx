@@ -1,30 +1,44 @@
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useStateOnChange } from 'danholibraryrjs';
-import type { Folder } from 'vtv-models';
+import { Folder } from 'vtv-models';
 
 import { useRequestState } from 'providers/ApiProvider';
-import FormGroup from 'components/Form/FormGroup';
+import { FormGroupObject as FormGroup } from 'components/Form/FormGroup';
 import VideoList from 'components/Medal/VideoList';
 
 export default function MedalView() {
     const [query, input, setInput] = useStateOnChange({ game: "", friendGroup: "" }, "1s");
-    const friendGroups = useRequestState<string[]>('/medal/friendGroups');
-    const games = useRequestState<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup });
-    const folder = useRequestState<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
+    const [friendGroups, fGError] = useRequestState<string[]>('/medal/friendGroups');
+    const [games, gError] = useRequestState<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup });
+    const [folder, fError] = useRequestState<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
+    const groups = useMemo(() => new Map<keyof typeof input, string[]>([
+        ['friendGroup', friendGroups ?? []],
+        ['game', games ?? []]
+    ]), [friendGroups, games]);
+    const error = useMemo(() => fGError || gError || fError, [fGError, gError, fError]);
 
     return (
         <div id="medal" className="page">
-            <header>
-                <form className="search">
-                    <FormGroup data={input} setData={setInput} property="friendGroup" select={{ options: friendGroups ?? [] }}  />
-                    <FormGroup data={input} setData={setInput} property="game" select={{ options: games ?? [] }}  />
-                </form>
-            </header>
-            <main>
+            <h1>Video Table View</h1>
+            {error ? (
+                <article className='error'>
+                    <h1>{error.message}</h1>
+                    <p>{error.stack}</p>
+                </article>
+            ) : (
                 <Suspense fallback={<div>Loading...</div>}>
-                    {folder ? <VideoList folder={folder} /> : <h1>There are no videos.</h1>}
+                    <header>
+                        <form className="search">
+                            {groups.array().map(([property, options]) => (
+                                <FormGroup key={property} data={input} setData={setInput} property={property} select={{ options }} />
+                            ))}
+                        </form>
+                    </header>
+                    <main>
+                        {folder ? <VideoList folder={folder} /> : <h1>There are no videos.</h1>}
+                    </main>
                 </Suspense>
-            </main>
+            )}
         </div>
     );
 }

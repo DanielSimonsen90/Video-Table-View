@@ -16,7 +16,7 @@ export function useRequest<Model>(url?: string, options: RequestInit = { method:
     }
 }
 
-export function useRequestState<Model>(url: string, query?: Object, options: RequestInit = { method: 'GET' }): Model {
+export function useRequestState<Model>(url: string, query?: Object, options: RequestInit = { method: 'GET' }): [Model, Error | undefined] {
     const apiUrl = useContext(ApiUrlContext);
     const endpoint = `${apiUrl}${ensureSlash(url)}`.replace(/ +/, "%20");
     const dependencies = useMemo(() => Object.keysOf(query ?? {}).map(key => query?.[key]), [query]);
@@ -26,7 +26,7 @@ export function useRequestState<Model>(url: string, query?: Object, options: Req
 
     useDeepCompareEffect(() => {
         if (dependencies.every(Boolean)) {
-            console.log(`Requesting ${endpoint}`, query);
+            // console.log(`Requesting ${endpoint}`, query);
             request<Model>(endpoint, options)
                 .then(setValue)
                 .catch(setError);
@@ -40,8 +40,7 @@ export function useRequestState<Model>(url: string, query?: Object, options: Req
 
     if (error) {
         console.error('The error below', { endpoint, value, error });
-        throw error;
     }
 
-    return value as Model;
+    return [value as Model, error];
 }

@@ -1,0 +1,15 @@
+.sort {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 1em;
+}
+
+.switch[data-checked=false] .switch-circle {
+    transform: translateX(-100%);
+}
+
+.switch-circle {
+    --transition-time: 250ms;
+    --shadow-offset: -2px;
+    left: calc(100% - .9em);
+}

@@ -1,0 +1,14 @@
+::-webkit-scrollbar {
+  --size: .5rem;
+  width: var(--size);
+  height: var(--size);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--foreground-dark);
+  border-radius: 1em;
+}

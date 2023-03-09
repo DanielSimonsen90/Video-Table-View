@@ -1,2 +1,2 @@
 import './FormGroup.scss';
-export { default } from './FormGroup';
+export * from './FormGroup';

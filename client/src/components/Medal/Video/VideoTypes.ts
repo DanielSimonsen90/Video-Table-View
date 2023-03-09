@@ -6,3 +6,10 @@ export type VideoProps = BaseProps<HTMLTableRowElement, false> & {
     folder: Folder,
     isTable: boolean,
 }
+
+export type VideoComponentProps = Omit<VideoProps, 'folder' | 'isTable'> & {
+    friendGroup: string,
+    game: string,
+    requestPlayVideo(endpoint?: string): Promise<void>,
+    requestOpenFolder(endpoint?: string): Promise<void>,
+}

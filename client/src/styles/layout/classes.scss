@@ -1,3 +1,8 @@
+.page {
+    display: grid;
+    gap: .5rem;
+}
+
 .button-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
