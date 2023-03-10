@@ -46,6 +46,7 @@ main:has(> :nth-child(3)) {
         grid-auto-flow: row;
         gap: .5rem;
         max-width: 30ch;
+        align-items: flex-end;
 
         > * {
             flex: 1;
