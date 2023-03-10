@@ -1,16 +1,18 @@
 import { Suspense, useMemo } from 'react';
-import { useStateOnChange } from 'danholibraryrjs';
+import { useStateOnChange, Button } from 'danholibraryrjs';
 import { Folder } from 'vtv-models';
 
 import { useRequestState } from 'providers/ApiProvider';
 import { FormGroupObject as FormGroup } from 'components/Form/FormGroup';
 import VideoList from 'components/Medal/VideoList';
+import { useForceUpdate, useRefresh } from 'providers/RefreshProvider';
 
 export default function MedalView() {
+    const [forceUpdate, refreshes] = useRefresh();
     const [query, input, setInput] = useStateOnChange({ game: "", friendGroup: "" }, "1s");
-    const [friendGroups, fGError] = useRequestState<string[]>('/medal/friendGroups');
-    const [games, gError] = useRequestState<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup });
-    const [folder, fError] = useRequestState<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
+    const [friendGroups, fGError] = useRequestState<string[]>('/medal/friendGroups', { refreshes });
+    const [games, gError] = useRequestState<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup, refreshes });
+    const [folder, fError] = useRequestState<Folder>(`/medal/${query.friendGroup}/${query.game}`, { ...query, refreshes });
     const groups = useMemo(() => new Map<keyof typeof input, string[]>([
         ['friendGroup', friendGroups ?? []],
         ['game', games ?? []]
@@ -32,6 +34,7 @@ export default function MedalView() {
                             {groups.array().map(([property, options]) => (
                                 <FormGroup key={property} data={input} setData={setInput} property={property} select={{ options }} />
                             ))}
+                            <Button importance='secondary' type="reset" onClick={forceUpdate}>Refresh</Button>
                         </form>
                     </header>
                     <main>

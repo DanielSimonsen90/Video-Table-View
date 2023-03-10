@@ -5,11 +5,14 @@ import Medal from 'pages/Medal';
 import ApiProvider from 'providers/ApiProvider';
 
 import './styles/index.scss';
+import RefreshProvider from 'providers/RefreshProvider';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <ApiProvider>
-      <Medal />
-    </ApiProvider>
+    <RefreshProvider>
+      <ApiProvider>
+        <Medal />
+      </ApiProvider>
+    </RefreshProvider>
   </StrictMode>
 );
