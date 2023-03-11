@@ -24,12 +24,8 @@ export default function VideoCard({
                     </p>
                 </div>
                 <div className="button-container">
-                    <button onClick={() => requestPlayVideo(
-                        `/medal/${friendGroup}/${game}/play?path=${path}`,
-                    )}>Play</button>
-                    <button onClick={() => requestOpenFolder(
-                        `/medal/${friendGroup}/${game}/open?path=${folderPath}`
-                    )}>Open Folder</button>
+                    <button onClick={requestPlayVideo}>Play</button>
+                    <button onClick={requestOpenFolder}>Open Folder</button>
                 </div>
             </footer>
         </article>

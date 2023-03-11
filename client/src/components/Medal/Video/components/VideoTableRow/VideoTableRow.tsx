@@ -13,12 +13,8 @@ export default function VideoTableRow({
             <td aria-label="created-at">{createdAt.toLocaleDateString()}</td>
             <td aria-label="modified-at">{modifiedAt.toLocaleDateString()}</td>
             <td className="button-container">
-                <button onClick={() => requestPlayVideo(
-                    `/medal/${friendGroup}/${game}/play?path=${path}`,
-                )}>Play</button>
-                <button onClick={() => requestOpenFolder(
-                    `/medal/${friendGroup}/${game}/open?path=${folderPath}`
-                )}>Open Folder</button>
+                <button onClick={requestPlayVideo}>Play</button>
+                <button onClick={requestOpenFolder}>Open Folder</button>
             </td>
         </tr>
     );

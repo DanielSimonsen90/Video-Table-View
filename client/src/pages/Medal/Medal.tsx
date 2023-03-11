@@ -9,8 +9,8 @@ import VideoList from 'components/Medal/VideoList';
 export default function MedalView() {
     const [query, input, setInput] = useStateOnChange({ game: "", friendGroup: "" }, "1s");
     const [friendGroups, fGError] = useRequestState<string[]>('/medal/friendGroups');
-    const [games, gError] = useRequestState<string[]>(`/medal/${query.friendGroup}`, { group: query.friendGroup });
-    const [folder, fError] = useRequestState<Folder>(`/medal/${query.friendGroup}/${query.game}`, query);
+    const [games, gError] = useRequestState<string[]>(`/medal/friendGroups/${query.friendGroup}/games`, { group: query.friendGroup });
+    const [folder, fError] = useRequestState<Folder>(`/medal/friendGroups/${query.friendGroup}/games/${query.game}`, query);
     const groups = useMemo(() => new Map<keyof typeof input, string[]>([
         ['friendGroup', friendGroups ?? []],
         ['game', games ?? []]
