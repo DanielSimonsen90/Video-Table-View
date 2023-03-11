@@ -26,7 +26,7 @@ router.get('/friendGroups', (req, res) => {
     res.status(200).json(friendGroups);
 });
 
-router.get('/:friendGroup', (req, res) => {
+router.get('/friendGroups/:friendGroup/games', (req, res) => {
     // Extract request information
     const { friendGroup } = req.params;
 
@@ -41,7 +41,7 @@ router.get('/:friendGroup', (req, res) => {
     res.status(200).json(files);
 });
 
-router.get('/:friendGroup/:game', (req, res) => {
+router.get('/friendGroups/:friendGroup/games/:game', (req, res) => {
     const path = getPath(req, res);
     if (typeof path !== 'string') return path;
     log(req, `Processing path: ${path}`)
@@ -53,7 +53,7 @@ router.get('/:friendGroup/:game', (req, res) => {
     res.status(200).json(folder.sortBy(req.query.sortBy as SortBy));
 });
 
-router.get('/:friendGroup/:game/open', (req, res) => {
+router.get('/friendGroups/:friendGroup/games/:game/open', (req, res) => {
     const path = req.query.path;
     if (typeof path !== 'string') return res.status(400).json({ error: 'Invalid path.' });
     log(req, `Video path: ${path}`);
@@ -62,7 +62,7 @@ router.get('/:friendGroup/:game/open', (req, res) => {
     res.status(204).json({ message: 'Opened folder.' });
 });
 
-router.get('/:friendGroup/:game/play', (req, res) => {
+router.get('/friendGroups/:friendGroup/games/:game/play', (req, res) => {
     const path = req.query.path;
     if (typeof path !== 'string') return res.status(400).json({ error: 'Invalid path.' });
     log(req, `Video path: ${path}`);
