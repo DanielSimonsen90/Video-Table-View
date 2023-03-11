@@ -10,7 +10,7 @@ import { config } from 'dotenv';
 config();
 
 const router = Router();
-const { MEDAL_PATH } = process.env;
+const { MEDAL_PATH, NEW_CLIP_PATH } = process.env;
 
 export type MedalGetAllOptions = {
     friendGroup: string;
@@ -32,7 +32,7 @@ router.get('/friendGroups/:friendGroup/games', (req, res) => {
 
     // Find the friend group as you can't trust client casing
     // If found, continue processing, else return 404
-    const path = getCorrentPath(req, res, MEDAL_PATH, friendGroup);
+    const path = getCorrectPath(req, res, MEDAL_PATH, friendGroup);
     if (typeof path !== 'string') return path;
     log(req, `Processing path: ${path}`)
 
@@ -72,6 +72,30 @@ router.get('/friendGroups/:friendGroup/games/:game/play', (req, res) => {
     res.status(204).json({ message: 'Opened video.' });
 });
 
+router.get('/new', (req, res) => {
+    const files = readdirSync(NEW_CLIP_PATH);
+    const amount = processPath(NEW_CLIP_PATH, files)
+        .filter(folder => folder instanceof Folder && folder.videos.length)
+        .map(folder => (folder as Folder).videos.length)
+        .reduce((a, b) => a + b, 0);
+    
+    const message = `${amount} new videos found.`;
+    log(req, message)
+
+    res.status(200).json({ message, amount });
+});
+
+router.get('/new/games/:game', (req, res) => {
+    const path = getCorrectPath(req, res, NEW_CLIP_PATH, req.params.game);
+    if (typeof path !== 'string') return path;
+
+    const files = readdirSync(path);
+    const folder = processPath(path, files);
+    log(req, `${folder.length} videos found.`)
+
+    res.status(200).json(folder.sortBy(req.query.sortBy as SortBy));
+});
+
 router.get('*', (req, res) => {
     res.status(404).json({ error: 'Invalid request.', url: req.originalUrl });
 })
@@ -84,13 +108,13 @@ function getPath(req: Request, res: Response): string | Response {
 
     // Find the friend group and game as you can't trust client casing
     // If found, continue processing, else return 404
-    const friendGroupPath = getCorrentPath(req, res, MEDAL_PATH, friendGroup);
+    const friendGroupPath = getCorrectPath(req, res, MEDAL_PATH, friendGroup);
     if (typeof friendGroupPath !== 'string') return friendGroupPath;
 
-    return getCorrentPath(req, res, friendGroupPath, game);
+    return getCorrectPath(req, res, friendGroupPath, game);
 }
 
-function getCorrentPath(req: Request, res: Response, path: string, search: string): string | Response {
+function getCorrectPath(req: Request, res: Response, path: string, search: string): string | Response {
     const result = readdirSync(path).find(file => file.toLowerCase() === search.replace('%20', ' ').toLowerCase());
     if (!result) return res.status(404).json({ error: `File "${search}" not found.` });
     log(req, `File "${result}" found from ${search}.`)
