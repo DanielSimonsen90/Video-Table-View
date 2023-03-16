@@ -1,0 +1,33 @@
+@use '../../../node_modules/danholibraryrjs/src/styles/animations/fades' as fades;
+
+.fade-out {
+    animation: fade-out 200ms ease-in-out;
+}
+
+.notification {
+    --position: 1%;
+    position: absolute;
+    top: var(--position);
+    right: var(--position);
+
+    display: flex;
+    align-items: center;
+
+    padding: 1em;
+    border-radius: .5em;
+
+    background-color: var(--foreground-dark);
+    color: var(--background-dark);
+    font-size: .75rem;
+
+    span {
+        position: absolute;
+        top: calc(var(--position) + .25em);
+        right: var(--position);
+        font-size: 1.5rem;
+        line-height: .5rem;
+        font-family: sans-serif;
+        cursor: pointer;
+        user-select: none;
+    }
+}

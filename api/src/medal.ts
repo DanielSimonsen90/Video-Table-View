@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import { readdirSync, statSync } from 'fs';
 import { Router, Request, Response } from 'express';
-import { Folder, SortBy } from 'vtv-models'
+import { Folder, NewVideoNotification, SortBy } from 'vtv-models'
 import log from './log.js';
 
 // If you use process.env in file, you must import dotenv and call config()
@@ -79,10 +79,10 @@ router.get('/new', (req, res) => {
         .map(folder => (folder as Folder).videos.length)
         .reduce((a, b) => a + b, 0);
     
-    const message = `${amount} new videos found.`;
+    const message = `${amount} new ${amount > 1 ? 'videos' : 'video'} found.`;
     log(req, message)
 
-    res.status(200).json({ message, amount });
+    res.status(200).json({ message, amount } as NewVideoNotification);
 });
 
 router.get('/new/games/:game', (req, res) => {
