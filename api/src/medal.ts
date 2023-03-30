@@ -74,6 +74,7 @@ router.get('/friendGroups/:friendGroup/games/:game/play', (req, res) => {
 
 router.get('/new', (req, res) => {
     const files = readdirSync(NEW_CLIP_PATH);
+    log(req, `${files.length} files found from ${NEW_CLIP_PATH}.`)
     const amount = processPath(NEW_CLIP_PATH, files)
         .filter(folder => folder instanceof Folder && folder.videos.length)
         .map(folder => (folder as Folder).videos.length)
@@ -116,7 +117,7 @@ function getPath(req: Request, res: Response): string | Response {
 
 function getCorrectPath(req: Request, res: Response, path: string, search: string): string | Response {
     const result = readdirSync(path).find(file => file.toLowerCase() === search.replace('%20', ' ').toLowerCase());
-    if (!result) return res.status(404).json({ error: `File "${search}" not found.` });
+    if (!result) return res.status(404).json({ error: `File "${search}" not found from ${path}.` });
     log(req, `File "${result}" found from ${search}.`)
     return `${path}/${result}`;
 }
@@ -138,7 +139,7 @@ function processPath(path: string, files: Array<string>): Folder {
         }
 
         // If the file is a video, add it to the folder
-        if (file.includes('.mp4')) {
+        if (file.match(/\.(mp4|mkv|mov)$/)) {
             const { size, birthtime: createdAt, mtime: modifiedAt } = statSync(filePath);
             const [extension, ...name] = file.split('.').reverse();
             console.log({ extension, name: name.join('.') })
