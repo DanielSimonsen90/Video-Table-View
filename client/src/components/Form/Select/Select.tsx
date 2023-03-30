@@ -25,10 +25,19 @@ export function Select<T extends SelectableType>({ value, options, setValue, ...
 }
 
 function Options<T extends SelectableType>({ options }: Pick<SelectProps<T>, 'options'>) {
-    return (<>
-        <option hidden value=""></option>
-        {options?.map(option => Array.isArray(option)
-            ? <option key={option[0]} value={option[0]}>{option[1]}</option>
-            : <option key={option} value={option}>{option}</option>)}
-    </>)
+    try {
+        return (<>
+            <option hidden value=""></option>
+            {options 
+                ? options.map(option => Array.isArray(option)
+                    ? <option key={option[0]} value={option[0]}>{option[1]}</option>
+                    : <option key={option} value={option}>{option}</option>)
+                : null}
+        </>)
+    } catch (err) {
+        console.error(err, {
+            options
+        });
+        return <p>you smell</p>
+    }
 }

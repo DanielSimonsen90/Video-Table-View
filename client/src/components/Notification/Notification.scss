@@ -1,23 +1,30 @@
 @use '../../../node_modules/danholibraryrjs/src/styles/animations/fades' as fades;
+@use '../../styles/partials/colors' as clrs;
+@use 'sass:map';
+
+$media-query: 700px;
 
 .fade-out {
-    animation: fade-out 200ms ease-in-out;
+    --duration: var(--animation-time, 500ms);
+    animation: fade-out var(--animation-time) ease-in-out;
 }
 
 .notification {
     --position: 1%;
-    position: absolute;
-    top: var(--position);
-    right: var(--position);
+    --animation-time: 500ms;
+
+    position: relative;
 
     display: flex;
     align-items: center;
+    flex: 1;
 
     padding: 1em;
+    margin-bottom: 2em;
     border-radius: .5em;
 
-    background-color: var(--foreground-dark);
-    color: var(--background-dark);
+    background-color: map-get(clrs.$notification, background);
+    color: map-get(clrs.$notification, foreground);
     font-size: .75rem;
 
     span {
@@ -29,5 +36,17 @@
         font-family: sans-serif;
         cursor: pointer;
         user-select: none;
+    }
+
+    @media screen and (min-width: $media-query) {
+        position: absolute;
+        inset: var(--position) var(--position) auto auto;
+    }
+}
+
+@media screen and (max-width: $media-query) {
+    header:has(.notification) {
+        flex-flow: column-reverse;
+        align-items: center;
     }
 }
