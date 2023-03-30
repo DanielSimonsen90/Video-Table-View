@@ -1,18 +1,18 @@
 import { useCallback, useState } from "react";
-import { useAnimationReverse, useTimeout, useStateOnUpdate, useCallbackOnce } from 'danholibraryrjs';
+import { useAnimation, useTimeout, useStateUpdate, useCallbackOnce } from 'danholibraryrjs';
 import { NotificationProps } from "./NotificationTypes";
 
 export default function Notification({ notification, timeout }: NotificationProps) {
     const { message, amount } = notification ?? {};
     const [closeClicked, setCloseClicked] = useState(false);
     const getDefaultVisibilityState = useCallback(() => !closeClicked && !!amount, [closeClicked, amount]);
-    const visisble = useStateOnUpdate(
+    const visisble = useStateUpdate(
         getDefaultVisibilityState(), 
-        getDefaultVisibilityState, 
+        { before: getDefaultVisibilityState }, 
         [amount, closeClicked]
     );
 
-    const fadeOut = useAnimationReverse(".notification", "fade-out", "2s");
+    const fadeOut = useAnimation(".notification", "fade-out", "2s");
     const onClose = useCallback(async () => {
         await fadeOut();
         // setCloseClicked(true);
