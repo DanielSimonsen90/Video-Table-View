@@ -6,3 +6,8 @@ $dark-darker: mix($dark, black, 90%);
 
 $light-dark: mix($light, $dark, 40%);
 $light-lighter: mix($light, white, 90%);
+
+$notification: (
+  background: #275927,
+  foreground: var(--foreground)
+);

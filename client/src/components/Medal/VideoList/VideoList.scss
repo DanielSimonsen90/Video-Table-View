@@ -1,0 +1,14 @@
+@use '../../../styles/partials/colors' as clrs;
+
+.video-list--cards, 
+.video-list--table tbody {
+  > * {
+    padding: .5em;
+    background-color: lighten(clrs.$dark, 2.5%);
+    border-radius: .5em;
+  }
+  
+  > :nth-child(2n) {
+    background-color: lighten(clrs.$dark, 5%);
+  }
+}

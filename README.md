@@ -4,7 +4,6 @@ To start the project, you'll need 2 instances of command line.
 2. /client where you run `npm run start`
 
 **api/.env**
-```env
-PORT: number
-MEDAL_PATH: C:/Users/User/Videos/Medal
-```
+* PORT: number
+* MEDAL_PATH: C:/Users/User/Videos/Medal
+* NEW_CLIP_PATH: C:\Medal\Clips

@@ -1,0 +1,52 @@
+@use '../../../node_modules/danholibraryrjs/src/styles/animations/fades' as fades;
+@use '../../styles/partials/colors' as clrs;
+@use 'sass:map';
+
+$media-query: 700px;
+
+.fade-out {
+    --duration: var(--animation-time, 500ms);
+    animation: fade-out var(--animation-time) ease-in-out;
+}
+
+.notification {
+    --position: 1%;
+    --animation-time: 500ms;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    flex: 1;
+
+    padding: 1em;
+    margin-bottom: 2em;
+    border-radius: .5em;
+
+    background-color: map-get(clrs.$notification, background);
+    color: map-get(clrs.$notification, foreground);
+    font-size: .75rem;
+
+    span {
+        position: absolute;
+        top: calc(var(--position) + .25em);
+        right: var(--position);
+        font-size: 1.5rem;
+        line-height: .5rem;
+        font-family: sans-serif;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    @media screen and (min-width: $media-query) {
+        position: absolute;
+        inset: var(--position) var(--position) auto auto;
+    }
+}
+
+@media screen and (max-width: $media-query) {
+    header:has(.notification) {
+        flex-flow: column-reverse;
+        align-items: center;
+    }
+}

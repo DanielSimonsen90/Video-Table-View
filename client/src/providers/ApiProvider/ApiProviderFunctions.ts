@@ -4,7 +4,13 @@ export function request<Data>(url: string, options: RequestInit = { method: 'GET
     return new Promise((resolve, reject) => {
         fetch(url, options)
             .then(res => res.json())
-            .then(resolve)
-            .catch(reject);
+            .then(data => {
+                console.log(url, data);
+                resolve(data);
+            })
+            .catch(reason => {
+                console.error(url, reason);
+                reject(reason);
+            });
     })
 }
