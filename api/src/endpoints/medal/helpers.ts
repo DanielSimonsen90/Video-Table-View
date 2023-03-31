@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { readdirSync, statSync } from 'fs';
-import { Folder } from 'vtv-models';
+import type { Folder } from 'vtv-models';
+
 import { log, useEnv } from '../../helpers.js';
 
 const { MEDAL_PATH } = useEnv();

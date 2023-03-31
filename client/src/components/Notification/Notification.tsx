@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { useAnimation, useTimeout, useStateUpdate, ClickEvent } from 'danholibraryrjs';
-import { NotificationProps } from "./NotificationTypes";
+import type { NotificationProps } from "./NotificationTypes";
 
 export default function Notification({ folder, timeout, onClick }: NotificationProps) {
     const [closeClicked, setCloseClicked] = useState(false);

@@ -24,7 +24,7 @@ export default function MedalView() {
 
     const onNotificationClick = useCallback(() => {
         forceSetVideoFolder(newVideoFolder);
-    }, [newVideoFolder]);
+    }, [newVideoFolder, forceSetVideoFolder]);
 
     return (
         <div id="medal" className="page">

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { readdirSync, statSync } from 'fs';
 
-import { Folder, SortBy } from "vtv-models";
+import type { SortBy } from "vtv-models";
 
 import { getCorrectPath, getPath, processPath } from "./helpers.js";
 import { log, useEnv } from '../../helpers.js';
