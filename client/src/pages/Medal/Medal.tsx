@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useStateOnChange, Button } from 'danholibraryrjs';
 import type { Folder } from 'vtv-models';
 
@@ -36,7 +36,7 @@ export default function MedalView() {
     return (
         <div id="medal" className="page">
             <h1>Video Table View</h1>
-            
+
             <header>
                 <form className="search">
                     {groups.array().map(([property, options]) => (

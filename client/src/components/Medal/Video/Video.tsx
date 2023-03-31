@@ -1,14 +1,17 @@
 import { useRequest } from 'providers/ApiProvider';
+import { useModal } from 'providers/ModalProvider/ModalProviderHooks';
 import { VideoCard, VideoTableRow } from './components';
 import { VideoProps } from './VideoTypes';
 
 export default function VideoView({ folder, isTable, ...props }: VideoProps) {
     const [game, friendGroup] = folder.path.split('/').reverse();
-    const requestPlayVideo = useRequest<void>();
-    const requestOpenFolder = useRequest<void>();
+    const openModal = useModal();
+    // const requestPlayVideo = useRequest<void>(`/medal/play?path=${props.video.path}`);
+    const requestPlayVideo = openModal(props)
+    const requestOpenFolder = useRequest<void>(`/medal/open?path=${props.video.folderPath}`);
+
     const componentProps = { 
-        requestPlayVideo: () => requestPlayVideo(`/medal/play?path=${props.video.path}`), 
-        requestOpenFolder: () => requestOpenFolder(`/medal/open?path=${props.video.folderPath}`),
+        requestPlayVideo, requestOpenFolder,
         game, friendGroup, ...props 
     };
 
