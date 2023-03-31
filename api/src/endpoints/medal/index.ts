@@ -21,3 +21,5 @@ router.get('/new', (req, res) => {
 router.get('*', (req, res) => {
   res.status(404).json({ error: 'Invalid request.', url: req.originalUrl });
 });
+
+export default router;

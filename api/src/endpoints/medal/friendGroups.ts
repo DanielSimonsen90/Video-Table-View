@@ -4,7 +4,7 @@ import { exec } from 'child_process';
 
 import { Folder, SortBy } from "vtv-models";
 
-import { getCorrectBasePath, getCorrectPath, getPath, processPath } from "./helpers";
+import { getCorrectBasePath, getCorrectPath, getPath, processPath } from "./helpers.js";
 import { log, useEnv } from '../../helpers.js';
 
 const { MEDAL_PATH, NEW_CLIP_PATH } = useEnv();
