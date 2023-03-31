@@ -22,25 +22,21 @@ export function useRequestState<Model>(url: string, query?: Object, options: Req
     const dependencies = useMemo(() => Object.keysOf(query ?? {}).map(key => query?.[key]), [query]);
 
     const [value, setValue] = useState<Model | undefined>(undefined);
-    const [error, setError] = useState<Error | undefined>(undefined);
 
     useDeepCompareEffect(() => {
         if (dependencies.every(Boolean)) {
             // console.log(`Requesting ${endpoint}`, query);
             request<Model>(endpoint, options)
                 .then(setValue)
-                .catch(setError);
+                .catch(error => {
+                    throw error;
+                });
         }
 
         return () => {
             setValue(undefined);
-            setError(undefined);
         };
     }, [...dependencies, endpoint, options]);
 
-    if (error) {
-        console.error('The error below', { endpoint, value, error });
-    }
-
-    return [value as Model, error, setValue] as const;
+    return [value as Model, setValue] as const;
 }
