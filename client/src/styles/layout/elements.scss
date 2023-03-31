@@ -28,6 +28,22 @@ h1 {
     text-align: center;
 }
 
+button {
+    border-radius: .5em;
+    padding: .5em 1em;
+
+    &.secondary {
+        background: transparent;
+        border: 1px solid var(--foreground-dark);
+        color: var(--foreground-dark);
+
+        &:hover {
+            border-color: var(--foreground);
+            color: var(--foreground);
+        }
+    }
+}
+
 select, input[type=text] {
     background-color: var(--background-dark);
     border: 1px solid var(--foreground-dark);

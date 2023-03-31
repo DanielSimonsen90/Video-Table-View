@@ -1,0 +1,1 @@
+export type RefreshContextType = [forceUpdate: () => void, refreshes: number];
