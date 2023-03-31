@@ -16,9 +16,9 @@ export function useRequest<Model>(url?: string, options: RequestInit = { method:
     }
 }
 
-export function useRequestState<Model>(url: string, query?: Object, options: RequestInit = { method: 'GET' }): [Model, Error | undefined] {
+export function useRequestState<Model>(url: string, query?: Object, options: RequestInit = { method: 'GET' }) {
     const apiUrl = useContext(ApiUrlContext);
-    const endpoint = `${apiUrl}${ensureSlash(url)}`.replace(/ +/, "%20");
+    const endpoint = useMemo(() => `${apiUrl}${ensureSlash(url)}`.replace(/ +/, "%20"), [apiUrl, url]);
     const dependencies = useMemo(() => Object.keysOf(query ?? {}).map(key => query?.[key]), [query]);
 
     const [value, setValue] = useState<Model | undefined>(undefined);
@@ -42,5 +42,5 @@ export function useRequestState<Model>(url: string, query?: Object, options: Req
         console.error('The error below', { endpoint, value, error });
     }
 
-    return [value as Model, error];
+    return [value as Model, error, setValue] as const;
 }

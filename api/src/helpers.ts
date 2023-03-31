@@ -27,5 +27,6 @@ export async function registerEndpoints(api: Express) {
 
         const { default: router } = await import(filePath.replace(__dirname, '.').replace('\\', '/'));
         api.use(`/api/${endpoint}`, router);
+        console.log(`Registered /api/${endpoint} endpoint.`);
     }
 }

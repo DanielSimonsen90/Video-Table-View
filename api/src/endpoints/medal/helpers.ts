@@ -3,7 +3,7 @@ import { readdirSync, statSync } from 'fs';
 import { Folder } from 'vtv-models';
 import { log, useEnv } from '../../helpers.js';
 
-const { MEDAL_PATH, NEW_CLIP_PATH } = useEnv();
+const { MEDAL_PATH } = useEnv();
 
 export function getPath(req: Request, res: Response): string | Response {
   // Extract request information
@@ -11,10 +11,7 @@ export function getPath(req: Request, res: Response): string | Response {
 
   // Find the friend group and game as you can't trust client casing
   // If found, continue processing, else return 404
-  const friendGroupPath = getCorrectPath(req, res,
-    getCorrectBasePath(friendGroup),
-    getCorrectBasePath(friendGroup) == MEDAL_PATH ? friendGroup : undefined
-  );
+  const friendGroupPath = getCorrectPath(req, res,MEDAL_PATH, friendGroup);
   if (typeof friendGroupPath !== 'string') return friendGroupPath;
 
   return getCorrectPath(req, res, friendGroupPath, game);
@@ -33,13 +30,12 @@ export function getCorrectPath(req: Request, res: Response, path: string, search
 }
 
 export function processPath(path: string, files: Array<string>): Folder {
-  path = path.replace('//', '/');
   // Create folder result
   const stats = statSync(path);
   const folder = new Folder(path, stats);
 
   for (const file of files) {
-    const filePath = `${path}/${file}`;
+    const filePath = `${path}\\${file}`;
 
     // If the file is a folder, process it
     if (!file.includes('.')) {
@@ -53,21 +49,18 @@ export function processPath(path: string, files: Array<string>): Folder {
     if (file.match(/\.(mp4|mkv|mov)$/)) {
       const { size, birthtime: createdAt, mtime: modifiedAt } = statSync(filePath);
       const [extension, ...name] = file.split('.').reverse();
-      console.log({ extension, name: name.join('.'), folder: folder.name });
-      folder.push({
+      const video = {
         name: name.reverse().join('.'),
         extension,
         size, createdAt, modifiedAt,
         path: filePath,
-        folderPath: path
-      });
+        folderPath: path,
+      };
+
+      folder.push(video);
     }
   }
 
   // Return the folder
   return folder;
-}
-
-export function getCorrectBasePath(friendGroup: string) {
-  return friendGroup.toLowerCase() === 'new' ? NEW_CLIP_PATH : MEDAL_PATH;
 }

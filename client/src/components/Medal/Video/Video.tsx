@@ -7,8 +7,8 @@ export default function VideoView({ folder, isTable, ...props }: VideoProps) {
     const requestPlayVideo = useRequest<void>();
     const requestOpenFolder = useRequest<void>();
     const componentProps = { 
-        requestPlayVideo: () => requestPlayVideo(`/medal/friendGroups/${friendGroup}/games/${game}/play?path=${props.video.path}`), 
-        requestOpenFolder: () => requestOpenFolder(`/medal/friendGroups/${friendGroup}/games/${game}/open?path=${props.video.folderPath}`),
+        requestPlayVideo: () => requestPlayVideo(`/medal/play?path=${props.video.path}`), 
+        requestOpenFolder: () => requestOpenFolder(`/medal/open?path=${props.video.folderPath}`),
         game, friendGroup, ...props 
     };
 

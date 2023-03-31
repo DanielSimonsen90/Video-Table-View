@@ -1,6 +1,6 @@
 import { Suspense, useCallback, useMemo } from 'react';
 import { useStateOnChange } from 'danholibraryrjs';
-import type { Folder, NewVideoNotification } from 'vtv-models';
+import type { Folder } from 'vtv-models';
 
 import { useRequestState } from 'providers/ApiProvider';
 import { FormGroupObject as FormGroup } from 'components/Form/FormGroup';
@@ -12,7 +12,7 @@ export default function MedalView() {
 
     const [friendGroups, fGError] = useRequestState<string[]>('/medal/friendGroups');
     const [games, gError] = useRequestState<string[]>(`/medal/friendGroups/${query.friendGroup}/games`, { group: query.friendGroup });
-    const [folder, fError] = useRequestState<Folder>(`/medal/friendGroups/${query.friendGroup}/games/${query.game}`, query);
+    const [folder, fError, forceSetVideoFolder] = useRequestState<Folder>(`/medal/friendGroups/${query.friendGroup}/games/${query.game}`, query);
 
     const [newVideoFolder, nVFError] = useRequestState<Folder>('/medal/new', {});
 
@@ -23,8 +23,7 @@ export default function MedalView() {
     const error = useMemo(() => fGError || gError || fError || nVFError, [fGError, gError, fError, nVFError]);
 
     const onNotificationClick = useCallback(() => {
-        throw new Error("Not implemented");
-        setInput({ friendGroup: 'New', game: "" });
+        forceSetVideoFolder(newVideoFolder);
     }, [newVideoFolder]);
 
     return (
@@ -43,10 +42,7 @@ export default function MedalView() {
                                 <FormGroup key={property} data={input} setData={setInput} property={property} select={{ options }} />
                             ))}
                         </form>
-                        <Notification notification={{
-                            amount: newVideoFolder?.videos.length ?? 0,
-                            message: `${newVideoFolder?.videos.length ?? 0} new videos`
-                        }} onClick={onNotificationClick} />
+                            <Notification folder={newVideoFolder} onClick={onNotificationClick} />
                     </header>
                     <main>
                         {folder ? <VideoList folder={folder} /> : <h1>There are no videos.</h1>}
