@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { readdirSync, statSync } from 'fs';
-import type { Folder } from 'vtv-models';
+import { Folder } from 'vtv-models';
 
 import { log, useEnv } from '../../helpers.js';
 

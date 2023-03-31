@@ -36,6 +36,8 @@ button {
         background: transparent;
         border: 1px solid var(--foreground-dark);
         color: var(--foreground-dark);
+        height: fit-content;
+        align-self: end;
 
         &:hover {
             border-color: var(--foreground);

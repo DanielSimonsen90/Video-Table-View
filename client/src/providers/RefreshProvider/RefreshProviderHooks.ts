@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { RefreshContext } from "./RefreshProviderConstants";
 
 export function useRefresh() {

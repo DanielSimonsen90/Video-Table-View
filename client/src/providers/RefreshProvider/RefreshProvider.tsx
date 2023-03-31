@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import { RefreshContext } from "./RefreshProviderConstants";
 
 export default function RefreshProvider({ children }: BaseProps) {
-    const [refreshes, setRefreshes] = useState(0);
+    const [refreshes, setRefreshes] = useState(1);
     const forceUpdate = useCallback(() => setRefreshes(refreshes + 1), [refreshes]);
 
     return (

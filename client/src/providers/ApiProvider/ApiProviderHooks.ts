@@ -11,7 +11,7 @@ export function useRequest<Model>(url?: string, options: RequestInit = { method:
         if (!endpoint && !url) throw new Error('No endpoint or url provided');
 
         const fullEndpoint = getEndpoint(endpoint ?? url!);
-        console.log(`Requesting ${fullEndpoint}`);
+        // console.log(`Requesting ${fullEndpoint}`);
         return request<Model>(fullEndpoint, options);
     }
 }
