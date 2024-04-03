@@ -2,7 +2,7 @@ import { Folder, Video } from "vtv-models";
 
 export function getVideosFromFolder(folder: Folder): Video[] {
     const { folders } = folder;
-    const videos = folder.videos.filter(video => video.folderPath === folder.path);
+    const videos = folder.videos?.filter(video => video.folderPath === folder.path) ?? [];
 
     for (const sub of folders) {
         videos.push(...getVideosFromFolder(sub));

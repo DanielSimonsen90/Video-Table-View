@@ -65,7 +65,7 @@ select, input[type=text] {
 tr {
     display: grid;
     grid-template-columns: 
-        minmax(5em, 10em) 
+        minmax(5em, 25em) 
         minmax(18em, 1fr) 
         repeat(2, minmax(5vw, 6em)) 
         10vw;

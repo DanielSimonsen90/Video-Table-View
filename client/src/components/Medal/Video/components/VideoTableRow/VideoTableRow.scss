@@ -1,3 +1,8 @@
+td[aria-label=name] {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 tr.video .button-container {
     gap: unset;
 }
